@@ -1,0 +1,8 @@
+{
+  "short_name": "WasteBridge",
+  "name": "WasteBridge - Waste Marketplace",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0a0f1e",
+  "background_color": "#0a0f1e"
+}
