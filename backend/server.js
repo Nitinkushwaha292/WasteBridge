@@ -20,7 +20,16 @@ app.use('/api/stats', require('./routes/stats'));
 app.use('/api/claims', require('./routes/claims'));
 
 // MongoDB Connection
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/wastebridge';
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+  console.error('❌ MONGO_URI environment variable is not set!');
+  process.exit(1);
+}
+
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch(err => console.error('MongoDB error:', err));
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
