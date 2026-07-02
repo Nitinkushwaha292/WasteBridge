@@ -46,7 +46,7 @@ export default function Profile() {
 
   return (
     <div style={{ padding: '40px 24px', maxWidth: 760, margin: '0 auto' }}>
-      <h1 style={{ fontSize: '2rem', color: '#f0f4f8', marginBottom: 32 }}>Your Profile</h1>
+      <h1 style={{ fontSize: '2rem', color: '#020202', marginBottom: 32 }}>Your Profile</h1>
 
       <div style={{ background: '#151d2e', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: 32, marginBottom: 20 }}>
         {/* Avatar & Basic */}
