@@ -23,14 +23,11 @@ function ListingCard({ listing }) {
     <Link to={`/listings/${listing._id}`} style={{ textDecoration: 'none' }}>
       <div style={{
         background: '#ffffff', border: '1.5px solid rgba(0,0,0,0.08)',
-        borderRadius: 16, padding: 22, transition: 'all 0.2s', cursor: 'pointer',
+        borderRadius: 16, padding: 20, transition: 'all 0.2s', cursor: 'pointer',
         borderTop: `3px solid ${color}`,
         boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-      }}
-        onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-        onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)'; e.currentTarget.style.transform = 'none'; }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexWrap: 'wrap', gap: 6 }}>
           <span style={{
             background: `${color}15`, color,
             fontSize: '0.72rem', fontWeight: 700, padding: '3px 10px',
@@ -42,28 +39,28 @@ function ListingCard({ listing }) {
           }}>{listing.urgency} urgency</span>
         </div>
 
-        <h3 style={{ color: '#0f1f12', marginBottom: 8, fontSize: '1rem', lineHeight: 1.4 }}>{listing.title}</h3>
+        <h3 style={{ color: '#0f1f12', marginBottom: 6, fontSize: '0.95rem', lineHeight: 1.4 }}>{listing.title}</h3>
         <p style={{
-          color: '#6b7280', fontSize: '0.85rem', marginBottom: 16, lineHeight: 1.6,
+          color: '#6b7280', fontSize: '0.82rem', marginBottom: 14, lineHeight: 1.6,
           overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical'
         }}>{listing.description}</p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
-          <div style={{ background: '#f4faf6', borderRadius: 8, padding: '10px 12px', border: '1px solid #dcfce7' }}>
-            <div style={{ color: '#9ca3af', fontSize: '0.68rem', textTransform: 'uppercase', marginBottom: 2 }}>Quantity</div>
-            <div style={{ color: '#0f1f12', fontWeight: 700 }}>{listing.quantity.toLocaleString()} kg</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
+          <div style={{ background: '#f4faf6', borderRadius: 8, padding: '8px 10px', border: '1px solid #dcfce7' }}>
+            <div style={{ color: '#9ca3af', fontSize: '0.65rem', textTransform: 'uppercase', marginBottom: 2 }}>Quantity</div>
+            <div style={{ color: '#0f1f12', fontWeight: 700, fontSize: '0.9rem' }}>{listing.quantity.toLocaleString()} kg</div>
           </div>
-          <div style={{ background: '#f4faf6', borderRadius: 8, padding: '10px 12px', border: '1px solid #dcfce7' }}>
-            <div style={{ color: '#9ca3af', fontSize: '0.68rem', textTransform: 'uppercase', marginBottom: 2 }}>Price/kg</div>
-            <div style={{ color: '#16a34a', fontWeight: 700 }}>₹{listing.pricePerKg}</div>
+          <div style={{ background: '#f4faf6', borderRadius: 8, padding: '8px 10px', border: '1px solid #dcfce7' }}>
+            <div style={{ color: '#9ca3af', fontSize: '0.65rem', textTransform: 'uppercase', marginBottom: 2 }}>Price/kg</div>
+            <div style={{ color: '#16a34a', fontWeight: 700, fontSize: '0.9rem' }}>₹{listing.pricePerKg}</div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 12, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-          <span style={{ color: '#6b7280', fontSize: '0.8rem' }}>📍 {listing.location?.city}</span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+          <span style={{ color: '#6b7280', fontSize: '0.78rem' }}>📍 {listing.location?.city}</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            {listing.postedBy?.verified && <span style={{ color: '#16a34a', fontSize: '0.75rem', fontWeight: 600 }}>✓ Verified</span>}
-            <span style={{ color: '#0f1f12', fontWeight: 700 }}>₹{listing.totalPrice?.toLocaleString()}</span>
+            {listing.postedBy?.verified && <span style={{ color: '#16a34a', fontSize: '0.72rem', fontWeight: 600 }}>✓ Verified</span>}
+            <span style={{ color: '#0f1f12', fontWeight: 700, fontSize: '0.9rem' }}>₹{listing.totalPrice?.toLocaleString()}</span>
           </div>
         </div>
       </div>
@@ -75,6 +72,7 @@ export default function Listings() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ wasteType: '', source: '', city: '', urgency: '', search: '' });
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -86,26 +84,43 @@ export default function Listings() {
   }, [filters]);
 
   return (
-    <div style={{ background: '#f4faf6', minHeight: '100vh', padding: '40px 24px' }}>
+    <div style={{ background: '#f4faf6', minHeight: '100vh', padding: '24px 16px' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
 
         {/* Header */}
-        <div style={{ marginBottom: 32 }}>
-          <h1 style={{ fontSize: '2rem', color: '#0f1f12', marginBottom: 8 }}>Waste Listings</h1>
-          <p style={{ color: '#6b7280' }}>Browse available waste from NGOs and collectors across India</p>
+        <div style={{ marginBottom: 20 }}>
+          <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', color: '#0f1f12', marginBottom: 6 }}>Waste Listings</h1>
+          <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Browse available waste from NGOs across India</p>
         </div>
+
+        {/* Mobile Filter Toggle */}
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          style={{
+            display: 'none',
+            width: '100%', background: '#fff',
+            border: '1.5px solid rgba(0,0,0,0.1)',
+            borderRadius: 10, padding: '10px 16px',
+            color: '#374151', fontWeight: 600,
+            fontSize: '0.9rem', marginBottom: 12,
+            textAlign: 'left'
+          }}
+          className="filter-toggle"
+        >
+          🔍 {showFilters ? 'Hide Filters' : 'Show Filters'}
+        </button>
 
         {/* Filters */}
         <div style={{
           background: '#ffffff', border: '1.5px solid rgba(0,0,0,0.08)',
-          borderRadius: 16, padding: 20, marginBottom: 28,
+          borderRadius: 16, padding: 16, marginBottom: 20,
           boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-        }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12 }}>
-            <input placeholder="Search listings..." value={filters.search}
+        }} className={showFilters ? 'filters-show' : 'filters-desktop'}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 10 }}>
+            <input placeholder="Search..." value={filters.search}
               onChange={e => setFilters(f => ({ ...f, search: e.target.value }))} />
             <select value={filters.wasteType} onChange={e => setFilters(f => ({ ...f, wasteType: e.target.value }))}>
-              <option value="">All Waste Types</option>
+              <option value="">All Types</option>
               {['plastic','metal','glass','paper','electronic','organic','textile','mixed'].map(t => (
                 <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
               ))}
@@ -122,17 +137,16 @@ export default function Listings() {
               <option value="medium">🟡 Medium</option>
               <option value="low">🟢 Low</option>
             </select>
-            <input placeholder="Filter by city..." value={filters.city}
+            <input placeholder="City..." value={filters.city}
               onChange={e => setFilters(f => ({ ...f, city: e.target.value }))} />
             <button onClick={() => setFilters({ wasteType: '', source: '', city: '', urgency: '', search: '' })} style={{
               background: '#fff', border: '1.5px solid rgba(0,0,0,0.12)',
-              color: '#6b7280', borderRadius: 8, padding: '10px',
-              fontSize: '0.85rem', fontWeight: 500
-            }}>Clear Filters</button>
+              color: '#6b7280', borderRadius: 8, padding: '10px', fontSize: '0.85rem'
+            }}>Clear</button>
           </div>
         </div>
 
-        <div style={{ marginBottom: 20, color: '#6b7280', fontSize: '0.9rem' }}>
+        <div style={{ marginBottom: 16, color: '#6b7280', fontSize: '0.88rem' }}>
           {loading ? 'Loading...' : `${listings.length} listing${listings.length !== 1 ? 's' : ''} found`}
         </div>
 
@@ -142,17 +156,29 @@ export default function Listings() {
             Loading listings...
           </div>
         ) : listings.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: 60, background: '#fff', borderRadius: 16, border: '1.5px solid rgba(0,0,0,0.08)' }}>
+          <div style={{ textAlign: 'center', padding: 48, background: '#fff', borderRadius: 16, border: '1.5px solid rgba(0,0,0,0.08)' }}>
             <div style={{ fontSize: '3rem', marginBottom: 16 }}>🔍</div>
             <h3 style={{ color: '#0f1f12', marginBottom: 8 }}>No listings found</h3>
-            <p style={{ color: '#6b7280' }}>Try adjusting your filters or check back later</p>
+            <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>Try adjusting your filters</p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
             {listings.map(l => <ListingCard key={l._id} listing={l} />)}
           </div>
         )}
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .filter-toggle { display: block !important; }
+          .filters-desktop { display: none; }
+          .filters-show { display: block !important; }
+        }
+        @media (min-width: 769px) {
+          .filters-desktop { display: block !important; }
+          .filter-toggle { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }
