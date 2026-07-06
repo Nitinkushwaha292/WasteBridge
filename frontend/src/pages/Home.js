@@ -13,8 +13,8 @@ const WASTE_CATEGORIES = [
 ];
 
 const HOW_STEPS = [
-  { step: '01', role: 'NGO', color: '#16a34a', icon: '🌊', title: 'Collect Waste', desc: 'NGOs and volunteers remove plastic and waste from rivers, oceans, and landfills across India.', img: 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=500&q=70' },
-  { step: '02', role: 'NGO', color: '#16a34a', icon: '📋', title: 'Post a Listing', desc: 'Create a listing with waste type, weight, location, photos and your asking price per kg.', img: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=500&q=70' },
+  { step: '01', role: 'NGO/Organizations/Volunteers', color: '#16a34a', icon: '🌊', title: 'Collect Waste', desc: 'NGOs and volunteers remove plastic and waste from rivers, oceans, and landfills across India.', img: 'https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=500&q=70' },
+  { step: '02', role: 'NGO/Organizations/Volunteers', color: '#16a34a', icon: '📋', title: 'Post a Listing', desc: 'Create a listing with waste type, weight, location, photos and your asking price per kg.', img: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=500&q=70' },
   { step: '03', role: 'Recycler', color: '#2563eb', icon: '🔍', title: 'Discover & Claim', desc: 'Recycling companies browse listings, filter by type and location, and send claim requests.', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=70' },
   { step: '04', role: 'Both', color: '#d97706', icon: '🤝', title: 'Connect & Earn', desc: 'NGO accepts the claim, arranges pickup, gets paid — and waste gets a new life as a product.', img: 'https://images.unsplash.com/photo-1604187351574-c75ca79f5807?w=500&q=70' },
 ];
@@ -79,7 +79,7 @@ export default function Home() {
             </h1>
 
             <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(1rem, 2.2vw, 1.2rem)', lineHeight: 1.8, marginBottom: 40, maxWidth: 580 }}>
-              WasteBridge connects NGOs removing plastic from rivers and oceans with recycling factories — turning environmental work into financial sustainability.
+              WasteBridge connects the NGOs, Organizations and volunteers removing plastic from rivers and oceans with recycling factories or companies who make thier product using wastes — turning environmental work into financial sustainability.
             </p>
 
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 56 }}>
