@@ -15,7 +15,7 @@ import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
 import Impact from './pages/Impact';
 import MapPage from './pages/MapPage';
-import VerifyEmail from './pages/VerifyEmail';
+
 
 
 const ProtectedRoute = ({ children, roles }) => {
