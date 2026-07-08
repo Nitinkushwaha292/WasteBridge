@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import VerifyEmail from './pages/VerifyEmail';
 import Listings from './pages/Listings';
 import ListingDetail from './pages/ListingDetail';
 import CreateListing from './pages/CreateListing';
@@ -14,6 +15,8 @@ import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
 import Impact from './pages/Impact';
 import MapPage from './pages/MapPage';
+import VerifyEmail from './pages/VerifyEmail';
+
 
 const ProtectedRoute = ({ children, roles }) => {
   const { user, loading } = useAuth();
@@ -29,10 +32,12 @@ function App() {
       <Navbar />
       <main style={{ flex: 1 }}>
         <Routes>
+        
           <Route path="/map" element={<MapPage />} />
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/listings" element={<Listings />} />
           <Route path="/listings/:id" element={<ListingDetail />} />
           <Route path="/impact" element={<Impact />} />
