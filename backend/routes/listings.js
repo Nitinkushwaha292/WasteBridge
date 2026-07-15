@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
     }
 
     const listings = await Listing.find(query)
-      .populate('postedBy', 'name organization verified role location')
+      .populate('postedBy', 'name organization verified role collectorType location')
       .sort({ createdAt: -1 });
 
     res.json(listings);
@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const listing = await Listing.findById(req.params.id)
-      .populate('postedBy', 'name organization verified role phone email location bio')
+      .populate('postedBy', 'name organization verified role collectorType phone email location bio')
       .populate('claimedBy', 'name organization');
     if (!listing) return res.status(404).json({ message: 'Listing not found' });
     res.json(listing);
@@ -50,12 +50,24 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST create listing (NGO only)
+// POST create listing
+// NGO collectors must be verified first
+// Volunteers and Individuals can post freely
 router.post('/', protect, async (req, res) => {
   try {
-    if (req.user.role !== 'ngo' && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Only NGOs can post waste listings' });
+    const { role, collectorType, verified } = req.user;
+
+    if (role !== 'collector' && role !== 'admin') {
+      return res.status(403).json({ message: 'Only collectors can post waste listings' });
     }
+
+    // NGO collectors must be verified by admin
+    if (role === 'collector' && collectorType === 'ngo' && !verified) {
+      return res.status(403).json({
+        message: 'Your NGO account is pending admin verification. You cannot post listings until verified. Please wait for admin approval.'
+      });
+    }
+
     const listing = await Listing.create({ ...req.body, postedBy: req.user._id });
     res.status(201).json(listing);
   } catch (err) {

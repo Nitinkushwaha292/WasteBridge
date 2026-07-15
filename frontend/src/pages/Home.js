@@ -126,7 +126,7 @@ export default function Home() {
                 India generates <span style={{ color: '#dc2626' }}>9.4 million tonnes</span> of plastic waste every year
               </h2>
               <p style={{ color: '#374151', lineHeight: 1.9, fontSize: '1.05rem', marginBottom: 20 }}>
-                NGOs work tirelessly to remove waste from rivers and oceans — but face one critical problem: <strong style={{ color: '#0f1f12' }}>they don't know what to do with the waste afterwards.</strong>
+                Many NGOs, Organizations and volunteers work tirelessly to remove waste from rivers and oceans — but face one critical problem: <strong style={{ color: '#0f1f12' }}>they don't know what to do with the waste afterwards.</strong>
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {[

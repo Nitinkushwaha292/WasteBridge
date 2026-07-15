@@ -34,12 +34,12 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-// GET claims for my listings (NGO)
+// GET claims received (Collector)
 router.get('/received', protect, async (req, res) => {
   try {
     const claims = await Claim.find({ postedBy: req.user._id })
       .populate('listing', 'title wasteType quantity location status')
-      .populate('claimedBy', 'name organization email phone verified')
+      .populate('claimedBy', 'name organization email phone verified role')
       .sort({ createdAt: -1 });
     res.json(claims);
   } catch (err) {
@@ -47,7 +47,7 @@ router.get('/received', protect, async (req, res) => {
   }
 });
 
-// GET claims I sent (Recycler)
+// GET claims sent (Recycler)
 router.get('/sent', protect, async (req, res) => {
   try {
     const claims = await Claim.find({ claimedBy: req.user._id })

@@ -62,6 +62,12 @@ const NGO_USERS = [
     verified: true, bio: 'Urban waste management across Ahmedabad city.',
     location: { city: 'Ahmedabad', state: 'Gujarat', country: 'India' }
   },
+  {
+    name: 'Nitin kushwaha', email: 'kushwahanitin696499@gmail.com', role: 'collector',
+    organization: 'GreenTimes', phone: '9993464460',
+    verified: true, bio: 'Urban waste management across Ahmedabad city.',
+    location: { city: 'Ahmedabad', state: 'Gujarat', country: 'India' }
+  },
 ];
 
 const RECYCLER_USERS = [
@@ -167,6 +173,7 @@ const LISTINGS_DATA = [
     availableTill: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
     ngoEmail: 'priya@mumbaibeach.org'
   },
+  
 ];
 
 // ── Main Seed Function ────────────────────────────────────
