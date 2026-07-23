@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
+const https = require('https');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 
@@ -9,22 +9,10 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'wastebridge_secret_2024', { expiresIn: '30d' });
 };
 
-// ── Email Transporter ──────────────────────────────────
-const getTransporter = () => {
-  return nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
-};
-
+// ── Send OTP via Brevo HTTP API (no SMTP needed) ──────
 const sendOTPEmail = async (email, name, otp, collectorType) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.log(`⚠️ Email not configured. OTP for ${email}: ${otp}`);
+  if (!process.env.BREVO_API_KEY) {
+    console.log(`⚠️ BREVO_API_KEY not set. OTP for ${email}: ${otp}`);
     return;
   }
 
@@ -33,11 +21,11 @@ const sendOTPEmail = async (email, name, otp, collectorType) => {
     : collectorType === 'individual' ? 'Individual Collector'
     : 'Recycling Company';
 
-  const mailOptions = {
-    from: `WasteBridge <${process.env.EMAIL_USER}>`,
-    to: email,
+  const emailData = JSON.stringify({
+    sender: { name: 'WasteBridge', email: process.env.EMAIL_USER || 'noreply@wastebridge.com' },
+    to: [{ email, name }],
     subject: '🔐 Your WasteBridge OTP Code',
-    html: `
+    htmlContent: `
       <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb;">
         <div style="background:linear-gradient(135deg,#16a34a,#22c55e);padding:32px 28px;text-align:center;">
           <div style="font-size:2.5rem;margin-bottom:8px;">♻️</div>
@@ -47,8 +35,8 @@ const sendOTPEmail = async (email, name, otp, collectorType) => {
         <div style="padding:32px 28px;">
           <p style="color:#374151;margin:0 0 8px;">Hi <strong>${name}</strong>,</p>
           <p style="color:#6b7280;font-size:0.9rem;margin:0 0 24px;">
-            You registered as <strong style="color:#16a34a;">${roleLabel}</strong>. 
-            Use the OTP below to verify your email.
+            You registered as <strong style="color:#16a34a;">${roleLabel}</strong> on WasteBridge.
+            Use the OTP below to verify your email address.
           </p>
           <div style="background:#f4faf6;border:2px dashed #16a34a;border-radius:12px;padding:28px;text-align:center;margin-bottom:24px;">
             <div style="color:#6b7280;font-size:0.8rem;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.1em;">Your OTP Code</div>
@@ -62,11 +50,43 @@ const sendOTPEmail = async (email, name, otp, collectorType) => {
         </div>
       </div>
     `
-  };
+  });
 
-  const transporter = getTransporter();
-  await transporter.sendMail(mailOptions);
-  console.log(`✅ OTP email sent to ${email}`);
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: 'api.brevo.com',
+      path: '/v3/smtp/email',
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+        'content-type': 'application/json',
+        'content-length': Buffer.byteLength(emailData)
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 201) {
+          console.log(`✅ OTP email sent to ${email}`);
+          resolve();
+        } else {
+          console.error(`❌ Brevo API error: ${data}`);
+          reject(new Error(`Brevo API error: ${data}`));
+        }
+      });
+    });
+
+    req.on('error', (err) => {
+      console.error('❌ Email send failed:', err.message);
+      reject(err);
+    });
+
+    req.write(emailData);
+    req.end();
+  });
 };
 
 // ── REGISTER ──────────────────────────────────────────
@@ -91,7 +111,6 @@ router.post('/register', async (req, res) => {
     const otp = user.generateOTP();
     await user.save();
 
-    // Send OTP email
     try {
       await sendOTPEmail(email, name, otp, collectorType);
     } catch (emailErr) {
@@ -151,8 +170,13 @@ router.post('/resend-otp', protect, async (req, res) => {
     }
     const otp = user.generateOTP();
     await user.save();
-    await sendOTPEmail(user.email, user.name, otp, user.collectorType);
-    res.json({ message: 'OTP sent successfully!' });
+
+    try {
+      await sendOTPEmail(user.email, user.name, otp, user.collectorType);
+      res.json({ message: 'OTP sent successfully!' });
+    } catch (err) {
+      res.status(500).json({ message: 'Failed to send OTP email' });
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
